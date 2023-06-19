@@ -45,6 +45,8 @@ export const NameDomainForm: React.FC<NameDomainFormProp> = memo(
     //   setStep(3);
     //   return "resolved";
     // };
+    // take note that same id cannot be minted
+    
     const handleClick = async () => {
         try {
           const { contract, web3 } = makeNameDomainContract();
