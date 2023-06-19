@@ -18,3 +18,5 @@ export const makeNameDomainContract = () => {
   const contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
   return { contract, web3 };
 };
+
+
