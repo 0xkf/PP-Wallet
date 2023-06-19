@@ -4,6 +4,8 @@ import { BaseProvider } from '@metamask/providers';
 import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider';
 
+
+
 declare global {
   interface Window {
     ethereum: BaseProvider;
@@ -51,16 +53,36 @@ export const NameDomainForm: React.FC<NameDomainFormProp> = memo(
         }
       };
 
+    // const connectMetamask = async () => {
+    //   const provider = await detectEthereumProvider({ mustBeMetaMask: true });
+    //   if (provider && window.ethereum) {
+    //     const web3 = new Web3(Web3.givenProvider);
+    //     // const accounts = await web3.eth.requestAccounts();
+    //     const accounts = await web3.eth.requestAccounts();
+    //     setWeb3(web3);
+    //     setAccount(accounts[0]);
+    //   } else {
+    //     alert('メタマスクがインストールされていません');
+    //   }
+    // };
     const connectMetamask = async () => {
-      const provider = await detectEthereumProvider({ mustBeMetaMask: true });
-      if (provider && window.ethereum) {
-        const web3 = new Web3(Web3.givenProvider);
-        const accounts = await web3.eth.requestAccounts();
-        setWeb3(web3);
-        setAccount(accounts[0]);
-      } else {
-        alert('メタマスクがインストールされていません');
-      }
+        const provider = await detectEthereumProvider({ mustBeMetaMask: true });
+        if (provider && window.ethereum) {
+            const web3 = new Web3(Web3.givenProvider);
+            const accounts = await web3.eth.requestAccounts();
+            setWeb3(web3);
+            setAccount(accounts[0]);
+            
+            // Resolve ENS name for the account
+            try {
+                const ensName = await web3.eth.ens.getAddress(accounts[0]);
+                console.log(`ENS Name for the account: ${ensName}`);
+            } catch (error) {
+                console.error("Could not resolve ENS Name for the account:", error);
+            }
+        } else {
+            alert('メタマスクがインストールされていません');
+        }
     };
 
     const sendTransaction = async () => {
