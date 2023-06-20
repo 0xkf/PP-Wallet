@@ -66,8 +66,8 @@ export const NameDomainForm: React.FC<NameDomainFormProp> = memo(
           await contract.methods.register(domain).send({
             from: myAddress[0],
             value: fee,
-            maxPriorityFeePerGas: web3.utils.toWei("3", "gwei"),
-            maxFeePerGas: web3.utils.toWei("3", "gwei"),
+            maxPriorityFeePerGas: web3.utils.toWei("10", "gwei"),
+            maxFeePerGas: web3.utils.toWei("10", "gwei"),
           });
           setStep(3);
           return "resolved";
@@ -107,10 +107,30 @@ export const NameDomainForm: React.FC<NameDomainFormProp> = memo(
     //     alert('メタマスクに接続してください');
     //   }
     // };
+    const sendTransaction = async () => {
+        if (web3 && account) {
+          const value = web3.utils.toWei('0.001', 'ether');
+          for (const toAddress of addresses) { // 送金先のアドレスに対してループを作る
+            const txParams = {
+              from: account,
+              to: toAddress,
+              value: value,
+              gas: 210000,
+              maxPriorityFeePerGas: undefined,
+              maxFeePerGas: undefined,
+            };
+            const txHash = await web3.eth.sendTransaction(txParams);
+            alert(`トランザクションハッシュ: ${txHash}`);
+          }
+        } else {
+          alert('メタマスクに接続してください');
+        }
+      };
     // const sendTransaction = async () => {
     //     if (web3 && account) {
-    //       const value = web3.utils.toWei('0.01', 'ether');
-    //       for (const toAddress of addresses) { // 送金先のアドレスに対してループを作る
+    //       const value = web3.utils.toWei('0.001', 'ether');
+    //       // Promise.allを使って全てのトランザクションを並行に送信する
+    //       await Promise.all(addresses.map(async (toAddress) => {
     //         const txParams = {
     //           from: account,
     //           to: toAddress,
@@ -121,31 +141,11 @@ export const NameDomainForm: React.FC<NameDomainFormProp> = memo(
     //         };
     //         const txHash = await web3.eth.sendTransaction(txParams);
     //         alert(`トランザクションハッシュ: ${txHash}`);
-    //       }
+    //       }));
     //     } else {
     //       alert('メタマスクに接続してください');
     //     }
     //   };
-    const sendTransaction = async () => {
-        if (web3 && account) {
-          const value = web3.utils.toWei('0.001', 'ether');
-          // Promise.allを使って全てのトランザクションを並行に送信する
-          await Promise.all(addresses.map(async (toAddress) => {
-            const txParams = {
-              from: account,
-              to: toAddress,
-              value: value,
-              gas: 21000,
-              maxPriorityFeePerGas: undefined,
-              maxFeePerGas: undefined,
-            };
-            const txHash = await web3.eth.sendTransaction(txParams);
-            alert(`トランザクションハッシュ: ${txHash}`);
-          }));
-        } else {
-          alert('メタマスクに接続してください');
-        }
-      };
 
 
     return (
